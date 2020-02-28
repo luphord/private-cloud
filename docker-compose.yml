@@ -24,8 +24,7 @@ services:
       - "traefik.http.middlewares.test-stripprefix.stripprefix.prefixes=/foo,/fiibar"
       - "traefik.http.routers.whoami.middlewares=test-stripprefix@docker"
   blanket:
-    image: luphord/blanketdb
-    command: uwsgi --socket 0.0.0.0:3031 --plugins python3 --protocol http --wsgi blanketdb_wsgi:application
+    image: luphord/blanketdb:0.4.0
     labels:
       - "traefik.http.routers.blanket.rule=Path(`/db`) || PathPrefix(`/db/`)"
       - "traefik.http.middlewares.strip-db.stripprefix.prefixes=/db"
