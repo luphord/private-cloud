@@ -29,3 +29,9 @@ services:
       - "traefik.http.routers.blanket.rule=Path(`/db`) || PathPrefix(`/db/`)"
       - "traefik.http.middlewares.strip-db.stripprefix.prefixes=/db"
       - "traefik.http.routers.blanket.middlewares=strip-db@docker"
+  metime:
+    build: ./metime
+    labels:
+      - "traefik.http.routers.metime.rule=Path(`/metime`) || PathPrefix(`/metime/`)"
+      - "traefik.http.middlewares.strip-metime.stripprefix.prefixes=/metime"
+      - "traefik.http.routers.metime.middlewares=strip-metime@docker"
