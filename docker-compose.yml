@@ -29,6 +29,12 @@ services:
       - "traefik.http.routers.blanket.rule=Path(`/db`) || PathPrefix(`/db/`)"
       - "traefik.http.middlewares.strip-db.stripprefix.prefixes=/db"
       - "traefik.http.routers.blanket.middlewares=strip-db@docker"
+  fossil:
+    image: duvel/fossil:2.10
+    labels:
+      - "traefik.http.routers.fossil.rule=Path(`/fossil`) || PathPrefix(`/fossil/`)"
+      - "traefik.http.middlewares.strip-fossil.stripprefix.prefixes=/fossil"
+      - "traefik.http.routers.fossil.middlewares=strip-fossil@docker"
   metime:
     build: ./metime
     labels:
