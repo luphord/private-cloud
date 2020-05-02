@@ -32,7 +32,9 @@ services:
   fossil:
     image: duvel/fossil:2.10
     labels:
-      - "traefik.http.routers.fossil.rule=Host(`fossil.localhost`)"
+      - "traefik.http.routers.fossil.rule=Path(`/fossil`) || PathPrefix(`/fossil/`)"
+      - "traefik.http.middlewares.strip-fossil.stripprefix.prefixes=/fossil"
+      - "traefik.http.routers.fossil.middlewares=strip-fossil@docker"
   metime:
     build: ./metime
     labels:
