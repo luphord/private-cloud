@@ -13,6 +13,7 @@ services:
     volumes:
       # So that Traefik can listen to the Docker events
       - /var/run/docker.sock:/var/run/docker.sock
+    restart: ${RESTART_POLICY:?RESTART_POLICY variable not set in .env}
   index:
     build: ./index
     labels:
