@@ -19,16 +19,19 @@ services:
       - "traefik.http.routers.index.rule=Host(`${HOST:?HOST variable not set in .env}`)"
       - "traefik.http.middlewares.index-add-prefix.addprefix.prefix=/cgi-bin/index.py"
       - "traefik.http.routers.index.middlewares=index-add-prefix@docker"
+    restart: ${RESTART_POLICY:?RESTART_POLICY variable not set in .env}
   whoami:
     image: containous/whoami
     labels:
       - "traefik.http.routers.whoami.rule=Host(`whoami.${HOST:?HOST variable not set in .env}`)"
+    restart: ${RESTART_POLICY:?RESTART_POLICY variable not set in .env}
   blanket:
     image: luphord/blanketdb:0.4.0
     volumes:
       - ${STORAGE_PATH:?STORAGE_PATH variable not set in .env}/blanketdb:/usr/src/app/db
     labels:
       - "traefik.http.routers.blanketdb.rule=Host(`blanketdb.${HOST:?HOST variable not set in .env}`)"
+    restart: ${RESTART_POLICY:?RESTART_POLICY variable not set in .env}
   fossil:
     image: duvel/fossil:2.10
     entrypoint: /usr/bin/fossil server --repolist --user admin /opt/fossil --baseurl http://fossil.${HOST:?HOST variable not set in .env}/
@@ -36,6 +39,7 @@ services:
       - ${STORAGE_PATH:?STORAGE_PATH variable not set in .env}/fossil-repos:/opt/fossil
     labels:
       - "traefik.http.routers.fossil.rule=Host(`fossil.${HOST:?HOST variable not set in .env}`)"
+    restart: ${RESTART_POLICY:?RESTART_POLICY variable not set in .env}
   metime:
     build: ./metime
     labels:
@@ -46,3 +50,4 @@ services:
       - METIME_TITLE
       - METIME_PERSON1
       - METIME_PERSON2
+    restart: ${RESTART_POLICY:?RESTART_POLICY variable not set in .env}
