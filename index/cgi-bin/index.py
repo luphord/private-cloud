@@ -15,7 +15,11 @@ HEAD = '''
     <title>Private Cloud</title>
   <style type="text/css">
 
-      body {from urllib.request import urlopen
+      body {
+        margin: auto;
+        max-width: 800px;
+        font-family: Arial, Helvetica, sans-serif;
+      }
     </style>
   </head>
   <body>
