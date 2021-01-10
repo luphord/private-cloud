@@ -34,3 +34,5 @@ services:
     build: ./metime
     labels:
       - "traefik.http.routers.metime.rule=Host(`metime.${HOST:?HOST variable not set in .env}`)"
+      - "traefik.http.middlewares.metime-add-prefix.addprefix.prefix=/cgi-bin/metime.py"
+      - "traefik.http.routers.metime.middlewares=metime-add-prefix@docker"
