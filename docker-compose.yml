@@ -1,4 +1,4 @@
-version: '2'
+version: '2.1'
 
 services:
   reverse-proxy:
@@ -18,29 +18,19 @@ services:
     # A container that exposes an API to show its IP address
     image: containous/whoami
     labels:
-      - "traefik.http.routers.whoami.rule=Path(`/foo`) || PathPrefix(`/foo/`)"
-      #- "traefik.http.middlewares.my-add-prefix.addprefix.prefix=/xyz"
-      #- "traefik.http.routers.whoami.middlewares=my-add-prefix@docker"
-      - "traefik.http.middlewares.test-stripprefix.stripprefix.prefixes=/foo,/fiibar"
-      - "traefik.http.routers.whoami.middlewares=test-stripprefix@docker"
+      - "traefik.http.routers.whoami.rule=Host(`whoami.${HOST:?HOST variable not set in .env}`)"
   blanket:
     image: luphord/blanketdb:0.4.0
     labels:
-      - "traefik.http.routers.blanket.rule=Path(`/db`) || PathPrefix(`/db/`)"
-      - "traefik.http.middlewares.strip-db.stripprefix.prefixes=/db"
-      - "traefik.http.routers.blanket.middlewares=strip-db@docker"
+      - "traefik.http.routers.blanketdb.rule=Host(`blanketdb.${HOST:?HOST variable not set in .env}`)"
   fossil:
     image: duvel/fossil:2.10
-    entrypoint: /usr/bin/fossil server --repolist --user admin /opt/fossil --baseurl http://localhost/fossil
+    entrypoint: /usr/bin/fossil server --repolist --user admin /opt/fossil --baseurl http://fossil.${HOST:?HOST variable not set in .env}/
     volumes:
       - /tmp/mytest:/opt/fossil
     labels:
-      - "traefik.http.routers.fossil.rule=Path(`/fossil`) || PathPrefix(`/fossil/`)"
-      - "traefik.http.middlewares.strip-fossil.stripprefix.prefixes=/fossil"
-      - "traefik.http.routers.fossil.middlewares=strip-fossil@docker"
+      - "traefik.http.routers.fossil.rule=Host(`fossil.${HOST:?HOST variable not set in .env}`)"
   metime:
     build: ./metime
     labels:
-      - "traefik.http.routers.metime.rule=Path(`/metime`) || PathPrefix(`/metime/`)"
-      - "traefik.http.middlewares.strip-metime.stripprefix.prefixes=/metime"
-      - "traefik.http.routers.metime.middlewares=strip-metime@docker"
+      - "traefik.http.routers.metime.rule=Host(`metime.${HOST:?HOST variable not set in .env}`)"
