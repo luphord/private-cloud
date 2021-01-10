@@ -31,7 +31,7 @@ services:
     image: duvel/fossil:2.10
     entrypoint: /usr/bin/fossil server --repolist --user admin /opt/fossil --baseurl http://fossil.${HOST:?HOST variable not set in .env}/
     volumes:
-      - /tmp/mytest:/opt/fossil
+      - ${STORAGE_PATH:?STORAGE_PATH variable not set in .env}/fossil-repos:/opt/fossil
     labels:
       - "traefik.http.routers.fossil.rule=Host(`fossil.${HOST:?HOST variable not set in .env}`)"
   metime:
