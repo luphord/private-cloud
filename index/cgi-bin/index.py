@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
 
-import os
 import json
 from urllib.request import urlopen
-
-host = os.environ.get('HOST')
 
 HEAD = '''
 <!DOCTYPE html>
@@ -37,9 +34,11 @@ print('''
 <ul>
 ''')
 
-with urlopen(f"http://{host}:8080/api/http/routers") as f:
+with urlopen(f"http://traefik-reverse-proxy:8080/api/http/routers") as f:
     for router in json.load(f):
-        if router["provider"] != "internal" and "reverse-proxy" not in router["name"] and not router["name"].startswith("index@"):
+        if router["provider"] != "internal" \
+                and "traefik-reverse-proxy" not in router["name"] \
+                and not router["name"].startswith("index@"):
             name = router["name"].split("@")[0]
             route = router["rule"].split("`")[1]
             print(f'<li><a href="//{route}">{name}</a></li>')

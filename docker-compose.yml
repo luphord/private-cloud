@@ -1,7 +1,7 @@
 version: '2.1'
 
 services:
-  reverse-proxy:
+  traefik-reverse-proxy:
     image: traefik:v2.1
     # Enables the web UI and tells Traefik to listen to docker
     command: --api.insecure=true --providers.docker
@@ -19,8 +19,6 @@ services:
       - "traefik.http.routers.index.rule=Host(`${HOST:?HOST variable not set in .env}`)"
       - "traefik.http.middlewares.index-add-prefix.addprefix.prefix=/cgi-bin/index.py"
       - "traefik.http.routers.index.middlewares=index-add-prefix@docker"
-    environment:
-      - HOST=${HOST:?HOST variable not set in .env}
   whoami:
     image: containous/whoami
     labels:
