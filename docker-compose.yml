@@ -25,6 +25,8 @@ services:
       - "traefik.http.routers.whoami.rule=Host(`whoami.${HOST:?HOST variable not set in .env}`)"
   blanket:
     image: luphord/blanketdb:0.4.0
+    volumes:
+      - ${STORAGE_PATH:?STORAGE_PATH variable not set in .env}/blanketdb:/usr/src/app/db
     labels:
       - "traefik.http.routers.blanketdb.rule=Host(`blanketdb.${HOST:?HOST variable not set in .env}`)"
   fossil:
