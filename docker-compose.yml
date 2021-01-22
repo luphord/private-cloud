@@ -52,3 +52,13 @@ services:
       - METIME_PERSON1
       - METIME_PERSON2
     restart: ${RESTART_POLICY:?RESTART_POLICY variable not set in .env}
+  certs:
+    build: ./certs
+    volumes:
+      - ${LETS_ENCRYPT_PATH_ETC:?LETS_ENCRYPT_PATH_ETC variable not set in .env}:/etc/letsencrypt
+      - ${LETS_ENCRYPT_PATH_VAR:?LETS_ENCRYPT_PATH_VAR variable not set in .env}:/var/lib/letsencrypt
+    environment: 
+      - CERTIFICATE_DOMAINS
+      - CERTIFICATE_MAIL
+      - LETS_ENCRYPT_PATH_ETC
+      - LETS_ENCRYPT_PATH_VAR
