@@ -1,0 +1,6 @@
+# traefik seems unhandle to receive cert paths via docker labels
+# hence, we need a config file, see https://kevinquillen.com/setting-traefik-2-local-ssl-certificate
+tls:
+  certificates:
+    - certFile: /tools/certs/cert.crt
+      keyFile: /tools/certs/cert.key

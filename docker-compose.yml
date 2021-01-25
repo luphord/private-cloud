@@ -4,20 +4,28 @@ services:
   traefik-reverse-proxy:
     image: traefik:v2.1
     # Enables the web UI and tells Traefik to listen to docker
-    command: --api.insecure=true --providers.docker
+    command: --api.insecure=true --entryPoints.websecure.address=:443 --providers.docker --providers.file.directory=/etc/traefik/dynamic_conf
     ports:
       # The HTTP port
-      - "80:80"
+      - "443:443"
       # The Web UI (enabled by --api.insecure=true)
       - "8080:8080"
+    labels:
+      - "traefik.entryPoints.websecure.tls.certificates.certFile="
+      - "traefik.entryPoints.websecure.tls.certificates.keyFile="
     volumes:
-      # So that Traefik can listen to the Docker events
       - /var/run/docker.sock:/var/run/docker.sock
+      # traefik seems unhandle to receive cert paths via docker labels
+      # hence, we need a config file, see https://kevinquillen.com/setting-traefik-2-local-ssl-certificate
+      - ./certconf.yml:/etc/traefik/dynamic_conf/conf.yml:ro
+      - ${CERT_FILE:?CERT_FILE variable not set in .env}:/tools/certs/cert.crt
+      - ${KEY_FILE:?KEY_FILE variable not set in .env}:/tools/certs/cert.key
     restart: ${RESTART_POLICY:?RESTART_POLICY variable not set in .env}
   index:
     build: ./index
     labels:
       - "traefik.http.routers.index.rule=Host(`${HOST:?HOST variable not set in .env}`)"
+      - "traefik.http.routers.index.tls=True"
       - "traefik.http.middlewares.index-add-prefix.addprefix.prefix=/cgi-bin/index.py"
       - "traefik.http.routers.index.middlewares=index-add-prefix@docker"
     restart: ${RESTART_POLICY:?RESTART_POLICY variable not set in .env}
@@ -25,6 +33,7 @@ services:
     image: containous/whoami
     labels:
       - "traefik.http.routers.whoami.rule=Host(`whoami.${HOST:?HOST variable not set in .env}`)"
+      - "traefik.http.routers.whoami.tls=True"
     restart: ${RESTART_POLICY:?RESTART_POLICY variable not set in .env}
   blanket:
     image: luphord/blanketdb:0.4.0
@@ -32,6 +41,7 @@ services:
       - ${STORAGE_PATH:?STORAGE_PATH variable not set in .env}/blanketdb:/usr/src/app/db
     labels:
       - "traefik.http.routers.blanketdb.rule=Host(`blanketdb.${HOST:?HOST variable not set in .env}`)"
+      - "traefik.http.routers.blanketdb.tls=True"
     restart: ${RESTART_POLICY:?RESTART_POLICY variable not set in .env}
   fossil:
     image: duvel/fossil:2.10
@@ -40,11 +50,13 @@ services:
       - ${STORAGE_PATH:?STORAGE_PATH variable not set in .env}/fossil-repos:/opt/fossil
     labels:
       - "traefik.http.routers.fossil.rule=Host(`fossil.${HOST:?HOST variable not set in .env}`)"
+      - "traefik.http.routers.fossil.tls=True"
     restart: ${RESTART_POLICY:?RESTART_POLICY variable not set in .env}
   metime:
     build: ./metime
     labels:
       - "traefik.http.routers.metime.rule=Host(`metime.${HOST:?HOST variable not set in .env}`)"
+      - "traefik.http.routers.metime.tls=True"
       - "traefik.http.middlewares.metime-add-prefix.addprefix.prefix=/cgi-bin/metime.py"
       - "traefik.http.routers.metime.middlewares=metime-add-prefix@docker"
     environment:
