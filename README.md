@@ -5,7 +5,7 @@ Management tooling for luphord's private cloud.
 
 For development you will have to generate certificates for localhost by running
 
-`cd certs_localhost && ./generate_localhost_certificates.sh && cd ..`
+`cd certs_localhost && ./generate_localhost_certificate.sh && cd ..`
 
 Afterwards, you can start everything using
 
