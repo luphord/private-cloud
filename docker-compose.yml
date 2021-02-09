@@ -78,6 +78,18 @@ services:
     volumes:
       - ${STORAGE_PATH:?STORAGE_PATH variable not set in .env}/ihatemoney:/var/lib/ihatemoney
     restart: ${RESTART_POLICY:?RESTART_POLICY variable not set in .env}
+  ihatemoney_edits:
+    build: ./ihatemoney_edits
+    labels:
+      - "traefik.http.routers.edits.rule=Host(`ihatemoney_edits.${HOST:?HOST variable not set in .env}`)"
+      - "traefik.http.routers.edits.tls=True"
+      - "traefik.http.middlewares.edits-add-prefix.addprefix.prefix=/cgi-bin/edits.sh"
+      - "traefik.http.routers.edits.middlewares=edits-add-prefix@docker"
+    environment:
+      - SQLITE_DATABASE=/var/lib/ihatemoney/ihatemoney.sqlite
+    volumes:
+      - ${STORAGE_PATH:?STORAGE_PATH variable not set in .env}/ihatemoney:/var/lib/ihatemoney
+    restart: ${RESTART_POLICY:?RESTART_POLICY variable not set in .env}
   certs:
     build: ./certs
     volumes:
